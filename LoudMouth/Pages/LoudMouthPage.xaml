@@ -18,7 +18,6 @@
             </Entry>
             <Label x:Name="CurrentTalker" />
             <ListView x:Name="RecordingsList"
-                ItemsSource="{Binding Recordings, Source={x:Reference LoudMouthPage}"
                 VerticalOptions="FillAndExpand"
                 ItemSelected="Handle_ItemSelected">
             </ListView>

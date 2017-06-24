@@ -7,7 +7,6 @@ namespace LoudMouth.Models {
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset FinishedAt { get; set; }
 
-        [PrimaryKey]
         public string FilePath { get; set; }
         public int Seconds { get; set; }
         public string ResolvedName {get; set;}
