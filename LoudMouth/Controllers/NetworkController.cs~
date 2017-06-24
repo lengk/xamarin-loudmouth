@@ -39,7 +39,7 @@ namespace LoudMouth {
 
             var body = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(body);
-            person.ProfileID = (string) json.GetValue("asd"); // Need to work out the profile ID
+            person.ProfileID = (string) json.GetValue("asd");
             Debug.WriteLine(new JObject(body).ToString(Newtonsoft.Json.Formatting.Indented));
         }
 
@@ -47,16 +47,6 @@ namespace LoudMouth {
         public async void EnrolProfile(Attendee person, bool shortAudio = false) {
             Debug.WriteLine("Enrol a Profile");
             var url = string.Format(EnrollProfileURL, person.ProfileID, shortAudio);
-
-            HttpResponseMessage response;
-
-            // Request body
-            byte[] byteData = Encoding.UTF8.GetBytes("");
-
-            using (var content = new ByteArrayContent(byteData)) {
-                content.Headers.ContentType = octetMedia;
-                response = await client.PostAsync(url, content);
-            }
         }
 
         // POST
@@ -73,9 +63,6 @@ namespace LoudMouth {
                 content.Headers.ContentType = octetMedia;
                 response = await client.PostAsync(url, content);
             }
-
-            var body = await response.Content.ReadAsStringAsync();
-            Debug.WriteLine(body); // Need get 
         }
 
         // DELETE
