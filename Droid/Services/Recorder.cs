@@ -9,14 +9,14 @@ namespace LoudMouth.Droid.Services {
     public class Recorder : IRecordingService {
         MediaRecorder _recorder;
         MediaPlayer _player;
-        string path = "/test.3gpp";
+        const string DefaultPath = "/test.3gpp";
 
         public Recorder() {
             _player = new MediaPlayer();
             _recorder = new MediaRecorder();
         }
 
-        public void StartRecording() {
+        public void StartRecording(string path = DefaultPath) {
             try {
                 _recorder.SetAudioSource(AudioSource.Mic);
                 _recorder.SetOutputFormat(OutputFormat.ThreeGpp);
@@ -32,7 +32,7 @@ namespace LoudMouth.Droid.Services {
         public void StopRecording() {
             _recorder.Stop();
             _recorder.Reset();
-            _player.SetDataSource(path);
+            _player.SetDataSource(DefaultPath);
             _player.Prepare();
             _player.Start();
         }
