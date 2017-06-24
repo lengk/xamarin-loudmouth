@@ -9,7 +9,7 @@ namespace LoudMouth
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new EnrollPage());
+            MainPage = new NavigationPage(new LoudMouthPage());
         }
 
         protected override void OnStart()

@@ -2,8 +2,8 @@
 using Realms;
 
 namespace LoudMouth.Models {
-    
-    public class Attendee : RealmObject{
+
+    public class Attendee : RealmObject {
 
         [PrimaryKey]
         public string Name { get; set; }

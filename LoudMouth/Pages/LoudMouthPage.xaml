@@ -10,6 +10,9 @@
                 Clicked="ToggleRecording"
                 VerticalOptions="Center"
                 HorizontalOptions="Center" />
+            <ListView x:Name="RecordingsList" VerticalOptions="FillAndExpand" ItemSelected="Handle_ItemSelected">
+                
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
