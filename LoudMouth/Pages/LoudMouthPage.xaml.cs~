@@ -28,12 +28,17 @@ namespace LoudMouth {
         }
 
         private async Task beginRecordings() {
+            int seconds = 3;
+            try {
+                seconds = int.Parse(SecondsEntry.Text);
+            } catch (Exception){}
             var count = 0;
             while (recording) {
                 var filename = string.Format("audio{0}.3pgg", count);
-                audioService.StartRecording(filename);
+                audioService.StartRecording(filename, seconds);
                 AudioFile file = new AudioFile {
                     FilePath = filename,
+                    Seconds = seconds,
                     CreatedAt = new DateTimeOffset(DateTime.Now)
                 };
                 recordings.Add(file);

@@ -26,7 +26,7 @@ namespace LoudMouth.Droid.Services {
 
         string filePath;
 
-        public string StartRecording(string filename = Constants.DEFAULT_AUDIO_PATH, int seconds = 60*5) {
+        public string StartRecording(string filename = Constants.DEFAULT_AUDIO_PATH, int seconds = 60 * 5) {
             Debug.WriteLine("Started Recording for " + filename);
             StopAudio();
 
@@ -34,8 +34,8 @@ namespace LoudMouth.Droid.Services {
             filePath = context.FilesDir.AbsolutePath + filename;
             try {
                 _recorder.SetAudioSource(AudioSource.Mic);
-                _recorder.SetOutputFormat(OutputFormat.ThreeGpp);
-                _recorder.SetAudioEncoder(AudioEncoder.Default);
+                _recorder.SetOutputFormat(OutputFormat.Default);
+                _recorder.SetAudioEncoder(AudioEncoder.AmrWb);
                 _recorder.SetOutputFile(filePath);
                 _recorder.Prepare();
                 _recorder.Start();
@@ -67,12 +67,16 @@ namespace LoudMouth.Droid.Services {
         }
 
         public void OnDestroy() {
-            _player.Release();
-            _recorder.Release();
-            _player.Dispose();
-            _recorder.Dispose();
-            _player = null;
-            _recorder = null;
+            if (_recorder != null) {
+                _recorder.Release();
+                _recorder.Dispose();
+                _recorder = null;
+            }
+            if (_player != null) {
+                _player.Release();
+                _player.Dispose();
+                _player = null;
+            }
         }
 
         public void saveFile(string filename) {

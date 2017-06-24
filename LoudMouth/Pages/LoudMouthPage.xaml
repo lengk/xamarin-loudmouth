@@ -10,8 +10,15 @@
                 Clicked="ToggleRecording"
                 VerticalOptions="Center"
                 HorizontalOptions="Center" />
-            <ListView x:Name="RecordingsList" VerticalOptions="FillAndExpand" ItemSelected="Handle_ItemSelected">
-                
+            <Entry x:Name="SecondsEntry"
+                 Keyboard="Numeric"
+                Placeholder="Audio Chunk Length"
+                HorizontalOptions="Center">
+            </Entry>
+            <Label x:Name="CurrentTalker"/> 
+            <ListView x:Name="RecordingsList"
+                VerticalOptions="FillAndExpand"
+                ItemSelected="Handle_ItemSelected">
             </ListView>
         </StackLayout>
     </ContentPage.Content>
