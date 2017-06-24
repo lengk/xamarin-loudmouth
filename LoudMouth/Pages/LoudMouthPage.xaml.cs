@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LoudMouth.Services;
 using Xamarin.Forms;
 
@@ -12,8 +13,14 @@ namespace LoudMouth {
         }
 
         public void ToggleRecording(object sender, EventArgs args) {
-            if (recording) audioService.StopRecording();
-            else audioService.StartRecording();
+            recording = !recording;
+            recordButton.Text = recording ? "Stop Recording" : "Record";
+            if (!recording) {
+                Task.Run(() => audioService.StopRecording());
+            } else {
+                Task.Run(() => audioService.StartRecording());
+            }
+
         }
 
         protected override void OnDisappearing() {

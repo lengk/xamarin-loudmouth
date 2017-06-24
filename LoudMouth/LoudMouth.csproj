@@ -48,7 +48,7 @@
     <Compile Include="Helpers\RealmHelper.cs" />
     <Compile Include="Controllers\DataAccessController.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Pages\EnrolPage.xaml.cs">
+    <Compile Include="Pages\EnrollPage.xaml.cs">
       <DependentUpon>EnrolPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>

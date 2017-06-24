@@ -1,4 +1,5 @@
 ﻿using Xamarin.Forms;
+using LoudMouth.Pages;
 
 namespace LoudMouth
 {
@@ -8,7 +9,7 @@ namespace LoudMouth
         {
             InitializeComponent();
 
-            MainPage = new LoudMouthPage();
+            MainPage = new NavigationPage(new EnrollPage());
         }
 
         protected override void OnStart()

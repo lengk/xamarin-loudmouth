@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	x:Class="LoudMouth.Pages.EnrolPage">
-	<ContentPage.Content>
-	</ContentPage.Content>
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="LoudMouth.Pages.EnrollPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Hey man lets talk!" />
+            <Entry TextChanged="Handle_TextChanged"
+                Placeholder="Name"
+                x:Name="NameEntry" />
+            <Button x:Name="SubmitButton" />
+        </StackLayout>
+    </ContentPage.Content>
 </ContentPage>
