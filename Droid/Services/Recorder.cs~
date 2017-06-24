@@ -48,9 +48,9 @@ namespace LoudMouth.Droid.Services {
         }
 
         public void StopRecording() {
-            Debug.WriteLine("Stopped Recording");
             _recorder.Stop();
             _recorder.Reset();
+            Debug.WriteLine("Stopped Recording");
         }
 
         public void PlayAudio(string filename = Constants.DEFAULT_AUDIO_PATH) {

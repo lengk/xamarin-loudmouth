@@ -10,6 +10,9 @@ namespace LoudMouth
             InitializeComponent();
 
             MainPage = new NavigationPage(new LoudMouthPage());
+            var item = new ToolbarItem();
+            item.Text = "\\/";
+            MainPage.ToolbarItems.Add(new ToolbarItem());
         }
 
         protected override void OnStart()

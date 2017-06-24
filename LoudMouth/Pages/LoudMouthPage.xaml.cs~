@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using LoudMouth.Controllers;
@@ -11,23 +12,26 @@ namespace LoudMouth {
         IRecordingService audioService = DependencyService.Get<IRecordingService>();
         DataAccessController db = new DataAccessController();
         bool recording;
-        ObservableCollection<AudioFile> recordings;
+        public ObservableCollection<AudioFile> Recordings;
+        NetworkController nc = new NetworkController();
+        IEnumerable<Attendee> people; 
+
 
         public LoudMouthPage() {
+            people = db.GetAll<Attendee>();
+            Recordings = new ObservableCollection<AudioFile>();
             InitializeComponent();
-            recordings = new ObservableCollection<AudioFile>();
-            RecordingsList.ItemsSource = recordings;
         }
 
         public void ToggleRecording(object sender, EventArgs args) {
             recording = !recording;
             RecordButton.Text = recording ? "Stop Recording" : "Record";
             if (recording) {
-                Task.Run(()=>beginRecordings());
+                Task.Run(()=>StartIdentifying());
             }
         }
 
-        private async Task beginRecordings() {
+        private async Task StartIdentifying() {
             int seconds = 3;
             try {
                 seconds = int.Parse(SecondsEntry.Text);
@@ -39,14 +43,23 @@ namespace LoudMouth {
                 AudioFile file = new AudioFile {
                     FilePath = filename,
                     Seconds = seconds,
-                    CreatedAt = new DateTimeOffset(DateTime.Now)
+                    CreatedAt = new DateTimeOffset(DateTime.Now),
                 };
-                recordings.Add(file);
+                await Task.Delay(seconds * 1000);
+                file.FinishedAt = new DateTimeOffset(DateTime.Now);
+                //file.ResolvedName = await getName(file);
+                file = db.Save(file);
+                Recordings.Add(file);
                 Device.BeginInvokeOnMainThread(()=>db.Save(file));
-                await Task.Delay(3000);
+
                 audioService.StopRecording();
                 count++;
             }
+        }
+
+        async Task<string> getName(AudioFile file){
+            var talking = await nc.IdentifyProfile(people, file);
+            return talking.Name;
         }
 
         protected override void OnDisappearing() {
@@ -59,4 +72,4 @@ namespace LoudMouth {
             audioService.PlayAudio(file.FilePath);
         }
     }
-}
+    }

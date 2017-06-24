@@ -1,4 +1,5 @@
-﻿﻿using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,19 +11,19 @@ using Newtonsoft.Json.Linq;
 
 namespace LoudMouth {
     public class NetworkController {
+
         string BaseUrl = "https://westus.api.cognitive.microsoft.com/spid/v1.0/";
         string EnrollProfileURL = "identificationProfiles/{0}/enroll?shortAudio={1}"; // POST
         string DeleteProfileURL = "identificationProfiles/{0}"; // DELETE
         string CreateProfileURL = "identifictionProfiles"; // POST
-        string IndentifyProfileURL = "identify?{0}&shortaudio={1}";
+        string IndentifyProfileURL = "identify?identificationProfileIds={0}&shortaudio={1}";
 
         HttpClient client;
         DataAccessController db;
 
-        const string SUBSCRIPTION_KEY = "";
+        const string SUBSCRIPTION_KEY = "4722a947064640e38bf302deac06e0fc";
 
         MediaTypeHeaderValue octetMedia = new MediaTypeHeaderValue("application/octet");
-        MediaTypeHeaderValue jsonMedia = new MediaTypeHeaderValue("application/json");
 
         public NetworkController() {
             client = new HttpClient();
@@ -33,17 +34,20 @@ namespace LoudMouth {
 
 
         // Post
-        public async void CreateProfileFor(Attendee person) {
+        public async Task<bool> CreateProfileFor(Attendee person) {
             Debug.WriteLine("Creating a Profile");
             var data = new JObject();
             data.Add("locale", "en-us");
             var content = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(CreateProfileURL, content);
+            var response = await client.PostAsync("https://westus.api.cognitive.microsoft.com/spid/v1.0/identificationProfiles", content);
 
             var body = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(body);
-            person.ProfileID = (string) json.GetValue("asd"); // Need to work out the profile ID
-            Debug.WriteLine(new JObject(body).ToString(Newtonsoft.Json.Formatting.Indented));
+            person.ProfileID = (string)json.GetValue("identificationProfileId"); // Need to work out the profile ID
+
+            db.Save(person);
+            Debug.WriteLine(json.ToString());
+            return false;
         }
 
         // POST 
@@ -63,22 +67,32 @@ namespace LoudMouth {
         }
 
         // POST
-        public async void IdentifyProfile(Attendee[] people, bool shortAudio = false) {
+        public async Task<Attendee> IdentifyProfile(IEnumerable<Attendee> people, AudioFile file, bool shortAudio = false) {
             // Request parameters
-            var url = string.Format(IndentifyProfileURL, shortAudio);
+            try {
+                string profileIds = "";
 
-            HttpResponseMessage response;
+                foreach (Attendee a in people) {
+                    profileIds += "," + a.ProfileID;
+                }
+                var url = string.Format(IndentifyProfileURL, shortAudio);
 
-            // Request body
-            byte[] byteData = Encoding.UTF8.GetBytes("");
+                HttpResponseMessage response;
 
-            using (var content = new ByteArrayContent(byteData)) {
-                content.Headers.ContentType = octetMedia;
-                response = await client.PostAsync(url, content);
+                // Request body
+                byte[] byteData = Encoding.UTF8.GetBytes("");
+
+                using (var content = new ByteArrayContent(byteData)) {
+                    content.Headers.ContentType = octetMedia;
+                    response = await client.PostAsync(url, content);
+                }
+
+                var body = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine(body); // Need get 
+            } catch (Exception e) {
+                Debug.WriteLine(e);
             }
-
-            var body = await response.Content.ReadAsStringAsync();
-            Debug.WriteLine(body); // Need get 
+            return null;
         }
 
         // DELETE

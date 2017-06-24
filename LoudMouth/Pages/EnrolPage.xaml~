@@ -5,9 +5,9 @@
     <ContentPage.Content>
         <StackLayout>
             <Label Text="Hey man lets talk!" />
-            <Entry
-                Placeholder="Name"
-                x:Name="NameEntry" />
+            <Entry Placeholder="Name" x:Name="PersonName" />
+            <Button Clicked="AddPerson" Text="Add Person" />
+            <ListView x:Name="PeopleList" />
             <Button x:Name="SubmitButton" />
         </StackLayout>
     </ContentPage.Content>

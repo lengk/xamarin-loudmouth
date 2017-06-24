@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using LoudMouth.Helpers;
 using Realms;
 
@@ -16,6 +17,10 @@ namespace LoudMouth.Controllers {
 
         public T Get<T>(string Name) where T : RealmObject {
             return realm.Find<T>(Name);
+        }
+
+        public IEnumerable<T> GetAll<T>() where T: RealmObject {
+            return realm.All<T>();
         }
 
         public T Save<T>(T t) where T : RealmObject {
