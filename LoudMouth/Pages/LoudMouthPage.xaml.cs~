@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using LoudMouth.Models;
 using LoudMouth.Services;
 using Xamarin.Forms;
 
@@ -18,7 +19,13 @@ namespace LoudMouth {
             if (!recording) {
                 Task.Run(() => audioService.StopRecording());
             } else {
-                Task.Run(() => audioService.StartRecording());
+                Task.Run(() => {
+                    var filename = audioService.StartRecording();
+                    AudioFile file = new AudioFile() {
+                        FilePath = filename,
+                        CreatedAt = new DateTimeOffset(DateTime.Now)
+                    };
+                });
             }
 
         }

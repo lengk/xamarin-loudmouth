@@ -52,6 +52,7 @@
       <DependentUpon>EnrolPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\AudioFile.cs" />
+    <Compile Include="Controllers\FileController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

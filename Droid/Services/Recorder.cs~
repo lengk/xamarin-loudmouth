@@ -23,8 +23,9 @@ namespace LoudMouth.Droid.Services {
 
         string filePath;
 
-        public void StartRecording(string filename = Constants.DEFAULT_AUDIO_PATH) {
+        public string StartRecording(string filename = Constants.DEFAULT_AUDIO_PATH) {
             StopAudio();
+
 
             saveFile(filename);
             filePath = context.FilesDir.AbsolutePath + filename;
@@ -35,9 +36,11 @@ namespace LoudMouth.Droid.Services {
                 _recorder.SetOutputFile(filePath);
                 _recorder.Prepare();
                 _recorder.Start();
+                return filePath;
             } catch (Exception e) {
                 Debug.WriteLine(e);
             }
+            return null;
         }
 
         public void StopRecording() {
@@ -46,7 +49,8 @@ namespace LoudMouth.Droid.Services {
             PlayAudio(filePath);
         }
 
-        public void PlayAudio(string path = Constants.DEFAULT_AUDIO_PATH) {
+        public void PlayAudio(string filename = Constants.DEFAULT_AUDIO_PATH) {
+            var path = context.FilesDir.AbsolutePath + filename;
             StopAudio();
             _player.SetDataSource(path);
             _player.Prepare();
