@@ -47,6 +47,7 @@ namespace LoudMouth.Droid.Services {
         }
 
         public void PlayAudio(string path = Constants.DEFAULT_AUDIO_PATH) {
+            StopAudio();
             _player.SetDataSource(path);
             _player.Prepare();
             _player.Start();
@@ -68,7 +69,6 @@ namespace LoudMouth.Droid.Services {
 
         public void saveFile(string filename) {
             System.IO.Stream outputStream;
-
             try {
                 outputStream = context.OpenFileOutput(filename, FileCreationMode.Private);
                 outputStream.Close();

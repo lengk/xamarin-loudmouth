@@ -14,7 +14,7 @@ namespace LoudMouth {
 
         public void ToggleRecording(object sender, EventArgs args) {
             recording = !recording;
-            recordButton.Text = recording ? "Stop Recording" : "Record";
+            RecordButton.Text = recording ? "Stop Recording" : "Record";
             if (!recording) {
                 Task.Run(() => audioService.StopRecording());
             } else {

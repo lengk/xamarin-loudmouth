@@ -5,7 +5,7 @@
     <ContentPage.Content>
         <StackLayout>
             <Label Text="Hey man lets talk!" />
-            <Entry TextChanged="Handle_TextChanged"
+            <Entry
                 Placeholder="Name"
                 x:Name="NameEntry" />
             <Button x:Name="SubmitButton" />

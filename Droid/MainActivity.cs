@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Diagnostics;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -22,7 +22,11 @@ namespace LoudMouth.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            LoadApplication(new App());
+            try {
+                LoadApplication(new App());
+            } catch (Exception e){
+                System.Diagnostics.Debug.WriteLine(e);
+            }
         }
     }
 }
