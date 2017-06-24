@@ -3,5 +3,7 @@ namespace LoudMouth.Services {
     public interface IRecordingService {
         void StartRecording();
         void StopRecording();
+        void onDestroy();
+        void PlayAudio(string path);
     }
 }

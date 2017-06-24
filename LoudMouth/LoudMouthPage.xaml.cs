@@ -15,5 +15,10 @@ namespace LoudMouth {
             if (recording) audioService.StopRecording();
             else audioService.StartRecording();
         }
+
+        protected override void OnDisappearing() {
+            base.OnDisappearing();
+            audioService.OnDestroy();
+        }
     }
 }
