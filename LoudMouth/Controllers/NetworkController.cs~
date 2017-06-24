@@ -1,9 +1,10 @@
-﻿using System;
+﻿﻿using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using LoudMouth.Controllers;
 using LoudMouth.Models;
 using Newtonsoft.Json.Linq;
 
@@ -16,6 +17,7 @@ namespace LoudMouth {
         string IndentifyProfileURL = "identify?{0}&shortaudio={1}";
 
         HttpClient client;
+        DataAccessController db;
 
         const string SUBSCRIPTION_KEY = "";
 
@@ -26,6 +28,7 @@ namespace LoudMouth {
             client = new HttpClient();
             client.BaseAddress = new Uri(BaseUrl);
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SUBSCRIPTION_KEY);
+            db = new DataAccessController();
         }
 
 
@@ -60,7 +63,7 @@ namespace LoudMouth {
         }
 
         // POST
-        public async void IdentifyProfile(Attendee[] person, bool shortAudio = false) {
+        public async void IdentifyProfile(Attendee[] people, bool shortAudio = false) {
             // Request parameters
             var url = string.Format(IndentifyProfileURL, shortAudio);
 

@@ -3,20 +3,20 @@ using System.Diagnostics;
 using Android.Media;
 using LoudMouth.Droid.Services;
 using LoudMouth.Services;
+using LoudMouth;
 
 [assembly: Xamarin.Forms.Dependency(typeof(Recorder))]
 namespace LoudMouth.Droid.Services {
     public class Recorder : IRecordingService {
         MediaRecorder _recorder;
         MediaPlayer _player;
-        const string DefaultPath = "/test.3gpp";
 
         public Recorder() {
             _player = new MediaPlayer();
             _recorder = new MediaRecorder();
         }
 
-        public void StartRecording(string path = DefaultPath) {
+        public void StartRecording(string path = Constants.DEFAULT_AUDIO_PATH) {
             try {
                 _recorder.SetAudioSource(AudioSource.Mic);
                 _recorder.SetOutputFormat(OutputFormat.ThreeGpp);
@@ -32,13 +32,13 @@ namespace LoudMouth.Droid.Services {
         public void StopRecording() {
             _recorder.Stop();
             _recorder.Reset();
-            _player.SetDataSource(DefaultPath);
-            _player.Prepare();
-            _player.Start();
+            PlayAudio();
         }
 
-        public void PlayAudio(string path) {
-            
+        public void PlayAudio(string path = Constants.DEFAULT_AUDIO_PATH) {
+            _player.SetDataSource(path);
+            _player.Prepare();
+            _player.Start();
         }
 
         public void OnDestroy() {

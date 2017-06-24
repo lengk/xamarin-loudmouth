@@ -30,6 +30,9 @@
   <ItemGroup>
     <EmbeddedResource Include="App.xaml" />
     <EmbeddedResource Include="Pages\LoudMouthPage.xaml" />
+    <EmbeddedResource Include="Pages\EnrolPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -44,6 +47,10 @@
     <Compile Include="Controllers\NetworkController.cs" />
     <Compile Include="Helpers\RealmHelper.cs" />
     <Compile Include="Controllers\DataAccessController.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Pages\EnrolPage.xaml.cs">
+      <DependentUpon>EnrolPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
