@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using LoudMouth.Controllers;
 using LoudMouth.Models;
+using LoudMouth.Pages;
 using LoudMouth.Services;
 using Xamarin.Forms;
 
 namespace LoudMouth {
     public partial class LoudMouthPage : ContentPage {
-        IRecordingService audioService = DependencyService.Get<IRecordingService>();
+        IAudioPlayer audioService = DependencyService.Get<IAudioPlayer>();
+        RecordingController recorder;
         DataAccessController db = new DataAccessController();
         bool recording;
         public ObservableCollection<AudioFile> Recordings;
@@ -20,6 +23,8 @@ namespace LoudMouth {
 
         public LoudMouthPage() {
             people = db.GetAll<Attendee>();
+            recorder = new RecordingController();
+            db.removeAll<AudioFile>();
             Recordings = new ObservableCollection<AudioFile>();
             InitializeComponent();
             RecordingsList.ItemsSource = Recordings;
@@ -30,35 +35,63 @@ namespace LoudMouth {
             RecordButton.Text = recording ? "Stop Recording" : "Record";
             if (recording) {
                 Task.Run(() => StartIdentifying());
+            } else {
+                Task.Run(() => Anaylze());
             }
         }
 
+        bool finished = false;
+        int count = 0;
+
         private async Task StartIdentifying() {
-            int seconds = 3;
+            finished = false;
+            int seconds = 7;
 
             try { seconds = int.Parse(SecondsEntry.Text); } catch (Exception e) { Debug.WriteLine("Failed parse int"); }
 
-            var count = 0;
+            count = 0;
             while (recording) {
-                var filename = string.Format("audio{0}.3pgg", count);
-                audioService.StartRecording(filename, seconds);
-                await Task.Delay(seconds * 1000);
+                var filename = string.Format("audio{0}", count);
+                Device.BeginInvokeOnMainThread(() => recorder.StartRecording(filename, seconds));
                 AudioFile file = new AudioFile {
                     Seconds = seconds,
-                    FilePath = filename,
+                    FileName = filename,
                     CreatedAt = new DateTimeOffset(DateTime.Now),
                 };
+                await Task.Delay(seconds * 1000);
+
+                recorder.StopRecording();
                 file.FinishedAt = new DateTimeOffset(DateTime.Now);
-                //file.ResolvedName = await getName(file);
+                while (recorder.audio.IsRecording) { }
 
-                Device.BeginInvokeOnMainThread(() => {
-                    db.Save(file);
-                });
-                Recordings.Add(file);
+                processFile(file);
 
-                audioService.StopRecording();
                 count++;
             }
+            finished = true;
+        }
+
+        private void processFile(AudioFile file) {
+            Device.BeginInvokeOnMainThread(async () => {
+                file.ResolvedName = await getName(file);
+                    CurrentTalker.Text = file.ResolvedName;
+                db.Save(file);
+            });
+        }
+
+        private async Task Anaylze() {
+            var files = db.GetAll<AudioFile>().Where((arg) => {
+                return arg.FileName.Contains("audio");
+            });
+
+            foreach (var file in files) {
+                var talker = people.FirstOrDefault(t => t.Name == file.ResolvedName);
+                if (talker != null) {
+                    talker.DurationTalked += file.Seconds;
+                }
+            }
+            db.SaveAll(people);
+            await Navigation.PushAsync(new ResultsPage());
         }
 
         async Task<string> getName(AudioFile file) {
@@ -73,7 +106,7 @@ namespace LoudMouth {
 
         void Handle_ItemSelected(object sender, Xamarin.Forms.SelectedItemChangedEventArgs e) {
             AudioFile file = e.SelectedItem as AudioFile;
-            audioService.PlayAudio(file.FilePath);
+            audioService.PlayAudio(file.FileName);
         }
     }
 }

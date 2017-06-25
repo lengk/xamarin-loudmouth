@@ -5,14 +5,18 @@ using Realms;
 
 namespace LoudMouth.Controllers {
     public class DataAccessController {
-        Realm realm;
+        public Realm realm;
 
         public DataAccessController() {
             realm = RealmHelper.GetInstance();
         }
 
         public void removeAll() {
-            realm.RemoveAll();
+            realm.Write(()=>realm.RemoveAll());
+        }
+
+        public void removeAll<T>() where T : RealmObject {
+            realm.Write(() => realm.RemoveAll<T>());
         }
 
         public T Get<T>(string Name) where T : RealmObject {
@@ -26,10 +30,18 @@ namespace LoudMouth.Controllers {
         public T Save<T>(T t) where T : RealmObject {
             T savedT;
             using (var trans = realm.BeginWrite()) {
-                savedT = realm.Add(t);
+                savedT = realm.Add(t, true);
                 trans.Commit();
             }
             return savedT;
+        }
+
+        public void SaveAll<T>(IEnumerable<T> ts) where T: RealmObject{
+            realm.Write(() => {
+                foreach(T t in ts){
+                    realm.Add(t, true);
+                }
+            });
         }
     }
 }

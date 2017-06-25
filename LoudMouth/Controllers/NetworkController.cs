@@ -10,6 +10,7 @@ using LoudMouth.Controllers;
 using LoudMouth.Models;
 using LoudMouth.Services;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace LoudMouth {
     public class NetworkController {
@@ -25,7 +26,7 @@ namespace LoudMouth {
 
         const string SUBSCRIPTION_KEY = "4722a947064640e38bf302deac06e0fc";
 
-        MediaTypeHeaderValue octetMedia = new MediaTypeHeaderValue("application/octet");
+        MediaTypeHeaderValue octetMedia = new MediaTypeHeaderValue("application/octet-stream");
 
         public NetworkController() {
             client = new HttpClient();
@@ -52,25 +53,29 @@ namespace LoudMouth {
         // POST 
         public async Task<bool> EnrolProfile(Attendee person, AudioFile file, bool shortAudio = false) {
             Debug.WriteLine("Enrol a Profile");
-            var url = string.Format(EnrollProfileURL, person.ProfileID, shortAudio);
+            try {
+                var url = string.Format(EnrollProfileURL, person.ProfileID, shortAudio);
 
-            HttpResponseMessage response;
+                HttpResponseMessage response;
 
-            // Request body
-            IFileLoader loader = DependencyService.Get<IFileLoader>();
-            byte[] byteData = loader.LoadFile(file.FilePath);
-            var client = new HttpClient();
-            using (var content = new ByteArrayContent(byteData)) {
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                response = await client.PostAsync(url, content);
+                // Request body
+                IFileLoader loader = DependencyService.Get<IFileLoader>();
+                Stream byteData = loader.LoadFile(file.FileName);
+
+                using (var content = new StreamContent(byteData)) {
+                    content.Headers.ContentType = octetMedia;
+                    response = await client.PostAsync(url, content);
+                }
+
+                if (!response.IsSuccessStatusCode) {
+                    var body = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine(body);
+                }
+                return response.IsSuccessStatusCode;
+            } catch(Exception e){
+                Debug.WriteLine(e);
             }
-
-            if (!response.IsSuccessStatusCode) {
-                var body = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine(body);
-            }
-
-            return response.IsSuccessStatusCode;
+            return false;         
         }
 
         // POST
@@ -82,14 +87,15 @@ namespace LoudMouth {
                 foreach (Attendee a in people) {
                     profileIds += "," + a.ProfileID;
                 }
-                var url = string.Format(IndentifyProfileURL, shortAudio);
+                var url = string.Format(IndentifyProfileURL, profileIds, shortAudio);
 
                 HttpResponseMessage response;
 
                 // Request body
-                byte[] byteData = Encoding.UTF8.GetBytes("");
+                IFileLoader loader = DependencyService.Get<IFileLoader>();
+                Stream byteData = loader.LoadFile(file.FileName);
 
-                using (var content = new ByteArrayContent(byteData)) {
+                using (var content = new StreamContent(byteData)) {
                     content.Headers.ContentType = octetMedia;
                     response = await client.PostAsync(url, content);
                 }

@@ -23,21 +23,34 @@ namespace LoudMouth.Pages {
         }
 
         void OnSubmitClicked(object sender, EventArgs e) {
-            string name = PersonName.Text;
-            Attendee person = new Attendee();
-            person.Name = name;
+            foreach (Attendee a in people) {
+                db.Save(a);
+            }
+            Navigation.PushAsync(new LoudMouthPage());
         }
 
         async void AddPerson(object sender, EventArgs args) {
+            if (string.IsNullOrEmpty(PersonName.Text)) { 
+                await DisplayAlert("Error", "Please Enter Name", "OK");
+                return;
+            }
             Attendee person = new Attendee();
             person.Name = PersonName.Text;
             person.ProfileID = await nc.CreateProfile();
-            await Navigation.PushPopupAsync(new PopupAuth(person));
-            people.Add(person);
+            Action<bool> callback = (result) => {
+                if (result) people.Add(person);
+            };
+            Navigation.PushPopupAsync(new PopupAuth(person, callback));
+
         }
 
-        void PlayFileWav(object sender, EventArgs args){
-            DependencyService.Get<IRecordingService>().PlayAudio("file.wav");
+        void PlayWav(object sender, EventArgs args) {
+            DependencyService.Get<IAudioPlayer>().PlayAudio("file.wav");
+        }
+
+        void Handle_ItemSelected(object sender, Xamarin.Forms.SelectedItemChangedEventArgs e) {
+            Attendee a = e.SelectedItem as Attendee;
+            DependencyService.Get<IAudioPlayer>().PlayAudio(a.Name);
         }
     }
 }

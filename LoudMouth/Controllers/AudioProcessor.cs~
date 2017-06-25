@@ -37,7 +37,7 @@ namespace LoudMouth.Controllers {
         /// </summary>
         public AudioProcessor(string file) {
             SampleRate = 16000;
-
+            IsRecording = true;
             var app = Resolver.Resolve<IXFormsApp>();
 
             var device = Resolver.Resolve<IDevice>();
@@ -80,15 +80,15 @@ namespace LoudMouth.Controllers {
                     //this.audioStream.Stop.Execute(this);
                     Debug.WriteLine("Microphone recorder was stopped.");
                     Record.ChangeCanExecute();
-
                     Stop.ChangeCanExecute();
+                    IsRecording = false;
                 },
                 () => {
                     return IsRecording;
                 }
                 );
         }
-
+      
         /// <summary>
         /// Audioes the stream_ on broadcast.
         /// </summary>

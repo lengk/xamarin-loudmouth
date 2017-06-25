@@ -9,8 +9,8 @@ namespace LoudMouth.Droid.Services {
     public class FileLoader : IFileLoader {
         string AbsolutePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
-        public byte[] LoadFile(string filename) {
-            return File.ReadAllBytes(Path.Combine(AbsolutePath, filename));
+        public Stream LoadFile(string filename) {
+            return File.OpenRead(Path.Combine(AbsolutePath, filename));
         }
 
         public Stream LoadWriteStream(string filename) {

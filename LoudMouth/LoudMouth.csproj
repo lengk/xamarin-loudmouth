@@ -36,13 +36,16 @@
     <EmbeddedResource Include="Views\PopupAuth.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="Pages\ResultsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IRecordingService.cs" />
+    <Compile Include="Services\IAudioPlayer.cs" />
     <Compile Include="Models\Attendee.cs" />
     <Compile Include="Pages\LoudMouthPage.xaml.cs">
       <DependentUpon>LoudMouthPage.xaml</DependentUpon>
@@ -60,6 +63,10 @@
       <DependentUpon>PopupAuth.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\IFileLoader.cs" />
+    <Compile Include="Controllers\RecordingController.cs" />
+    <Compile Include="Pages\ResultsPage.xaml.cs">
+      <DependentUpon>ResultsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

@@ -28,13 +28,13 @@ namespace LoudMouth
 
         protected override void OnStart()
         {
-            AudioProcessor audio = new AudioProcessor("file.wav");
-
-            audio.Record.Execute(null);
-            Task.Run(async () => {
-                await Task.Delay(3000);
-                audio.Stop.Execute(null);
-            });
+            //AudioProcessor audio = new AudioProcessor("file.wav");
+            //new DataAccessController().removeAll();
+            //audio.Record.Execute(null);
+            //Task.Run(async () => {
+            //    await Task.Delay(2000);
+            //    audio.Stop.Execute(null);
+            //});
         }
 
         protected override void OnSleep()

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
-using Android.Media;
-using Android.App;
+using System.IO;
 using Android.Content;
+using Android.Media;
 using LoudMouth.Droid.Services;
 using LoudMouth.Services;
-using LoudMouth;
 using Xamarin.Forms;
-using System.IO;
 
 [assembly: Dependency(typeof(AudioController))]
 namespace LoudMouth.Droid.Services {
-    public class AudioController : IRecordingService {
+    public class AudioController : IAudioPlayer {
         Context context;
 
         MediaRecorder _recorder;
@@ -24,31 +22,6 @@ namespace LoudMouth.Droid.Services {
             _player = new MediaPlayer();
             _recorder = new MediaRecorder();
             Debug.WriteLine(context.FilesDir);
-        }
-
-        public string StartRecording(string filename = Constants.DEFAULT_AUDIO_PATH, int seconds = 60 * 5) {
-            Debug.WriteLine("Started Recording for " + filename);
-            StopAudio();
-            var filePath = Path.Combine(ROOTPATH, filename);
-            try {
-                _recorder.SetAudioSource(AudioSource.Mic);
-                _recorder.SetOutputFormat(OutputFormat.Default);
-                _recorder.SetAudioEncoder(AudioEncoder.AmrWb);
-                _recorder.SetOutputFile(filePath);
-                _recorder.Prepare();
-                _recorder.Start();
-
-                return filePath;
-            } catch (Exception e) {
-                Debug.WriteLine(e);
-            }
-            return null;
-        }
-
-        public void StopRecording() {
-            _recorder.Stop();
-            _recorder.Reset();
-            Debug.WriteLine("Stopped Recording");
         }
 
         public void PlayAudio(string filename = Constants.DEFAULT_AUDIO_PATH) {

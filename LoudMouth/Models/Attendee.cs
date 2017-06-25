@@ -11,7 +11,7 @@ namespace LoudMouth.Models {
         public int DurationTalked { get; set; }
 
         public override string ToString() {
-            return string.Format("Name={0} PorfileID={1}", Name, ProfileID);
+            return Name;
         }
     }
 }
