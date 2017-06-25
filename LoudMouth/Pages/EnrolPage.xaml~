@@ -4,7 +4,7 @@
     x:Class="LoudMouth.Pages.EnrollPage">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Hey man lets talk!" />
+            <Button Text="Play file.wav" Clicked="PlayFileWav"/>
             <Entry Placeholder="Name" x:Name="PersonName" />
             <Button Clicked="AddPerson" Text="Add Person" />
             <ListView x:Name="PeopleList" />

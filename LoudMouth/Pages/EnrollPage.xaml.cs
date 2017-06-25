@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using LoudMouth.Controllers;
 using LoudMouth.Models;
+using LoudMouth.Services;
 using LoudMouth.Views;
 using Rg.Plugins.Popup;
 using Rg.Plugins.Popup.Extensions;
@@ -33,6 +34,10 @@ namespace LoudMouth.Pages {
             person.ProfileID = await nc.CreateProfile();
             await Navigation.PushPopupAsync(new PopupAuth(person));
             people.Add(person);
+        }
+
+        void PlayFileWav(object sender, EventArgs args){
+            DependencyService.Get<IRecordingService>().PlayAudio("file.wav");
         }
     }
 }

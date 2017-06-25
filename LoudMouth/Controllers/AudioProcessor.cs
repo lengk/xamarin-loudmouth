@@ -1,6 +1,8 @@
 ﻿
 
+using System.Diagnostics;
 using System.Linq;
+using LoudMouth.Services;
 using Xamarin.Forms;
 using XLabs.Ioc;
 using XLabs.Platform.Device;
@@ -33,12 +35,10 @@ namespace LoudMouth.Controllers {
         /// <summary>
         /// Initializes a new instance of the <see cref="WaveRecorderViewModel"/> class.
         /// </summary>
-        public AudioProcessor() {
+        public AudioProcessor(string file) {
             SampleRate = 16000;
 
             var app = Resolver.Resolve<IXFormsApp>();
-
-            this.FileName = System.IO.Path.Combine(app.AppDataDirectory, "audiosample.wav");
 
             var device = Resolver.Resolve<IDevice>();
 
@@ -46,14 +46,16 @@ namespace LoudMouth.Controllers {
                 _audioStream = device.Microphone;
                 _recorder = new WaveRecorder();
             }
+            var fileStream = DependencyService.Get<IFileLoader>().LoadWriteStream(file);
 
             Record = new Command(
                 () => {
+                    
                     _audioStream.OnBroadcast += audioStream_OnBroadcast;
                     //this.audioStream.Start.Execute(this.SampleRate);
                     _recorder.StartRecorder(
                         _audioStream,
-                        device.FileManager.OpenFile(FileName, XLabs.Platform.Services.IO.FileMode.Create, XLabs.Platform.Services.IO.FileAccess.Write),
+                        fileStream, 
                         SampleRate).ContinueWith(t => {
                             if (t.IsCompleted) {
                                 IsRecording = t.Result;
@@ -76,8 +78,9 @@ namespace LoudMouth.Controllers {
                     _audioStream.OnBroadcast -= audioStream_OnBroadcast;
                     await _recorder.StopRecorder();
                     //this.audioStream.Stop.Execute(this);
-                    System.Diagnostics.Debug.WriteLine("Microphone recorder was stopped.");
+                    Debug.WriteLine("Microphone recorder was stopped.");
                     Record.ChangeCanExecute();
+
                     Stop.ChangeCanExecute();
                 },
                 () => {
@@ -92,7 +95,7 @@ namespace LoudMouth.Controllers {
         /// <param name="sender">The sender.</param>
         /// <param name="e">The e.</param>
         private void audioStream_OnBroadcast(object sender, XLabs.EventArgs<byte[]> e) {
-            System.Diagnostics.Debug.WriteLine("Microphone recorded {0} bytes.", e.Value.Length);
+            Debug.WriteLine("Microphone recorded {0} bytes.", e.Value.Length);
         }
 
         /// <summary>
@@ -127,7 +130,7 @@ namespace LoudMouth.Controllers {
         /// Gets or sets the name of the file.
         /// </summary>
         /// <value>The name of the file.</value>
-        public string FileName {
+        public string  FileName {
             get;
             set;
         }

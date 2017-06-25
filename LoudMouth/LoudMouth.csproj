@@ -59,7 +59,6 @@
     <Compile Include="Views\PopupAuth.xaml.cs">
       <DependentUpon>PopupAuth.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\RecordingController.cs" />
     <Compile Include="Services\IFileLoader.cs" />
   </ItemGroup>
   <ItemGroup>

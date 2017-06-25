@@ -6,6 +6,7 @@ using XLabs.Platform.Device;
 using XLabs.Platform.Mvvm;
 using XLabs.Platform.Services.Media;
 using System.Threading.Tasks;
+using LoudMouth.Services;
 
 namespace LoudMouth
 {
@@ -25,13 +26,15 @@ namespace LoudMouth
             MainPage.ToolbarItems.Add(new ToolbarItem());
         }
 
-        protected override async void OnStart()
+        protected override void OnStart()
         {
-            AudioProcessor audio = new AudioProcessor();
-            audio.FileName = "/data/data/com.hacakathon.platform.ai.loudmouth/files/file.wav";
+            AudioProcessor audio = new AudioProcessor("file.wav");
+
             audio.Record.Execute(null);
-            await Task.Delay(5000);
-            audio.Stop.Execute(null);
+            Task.Run(async () => {
+                await Task.Delay(3000);
+                audio.Stop.Execute(null);
+            });
         }
 
         protected override void OnSleep()

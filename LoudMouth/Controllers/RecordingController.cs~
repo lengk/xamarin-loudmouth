@@ -19,7 +19,6 @@ namespace LoudMouth.Controllers {
 
         IAudioStream audioStream;
         static WaveRecorder recorder;
-        static string FileName = "/chicken.wav";
 
         public void Start() {
             AudioProcessor processor = new AudioProcessor();

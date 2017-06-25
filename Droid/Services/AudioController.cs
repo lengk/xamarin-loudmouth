@@ -7,30 +7,29 @@ using LoudMouth.Droid.Services;
 using LoudMouth.Services;
 using LoudMouth;
 using Xamarin.Forms;
+using System.IO;
 
-[assembly: Dependency(typeof(Recorder))]
+[assembly: Dependency(typeof(AudioController))]
 namespace LoudMouth.Droid.Services {
-    public class Recorder : IRecordingService {
+    public class AudioController : IRecordingService {
         Context context;
 
         MediaRecorder _recorder;
         MediaPlayer _player;
 
-        public Recorder() {
+        string ROOTPATH = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+
+        public AudioController() {
             context = Android.App.Application.Context;
             _player = new MediaPlayer();
             _recorder = new MediaRecorder();
             Debug.WriteLine(context.FilesDir);
         }
 
-        string filePath;
-
         public string StartRecording(string filename = Constants.DEFAULT_AUDIO_PATH, int seconds = 60 * 5) {
             Debug.WriteLine("Started Recording for " + filename);
             StopAudio();
-
-            saveFile(filename);
-            filePath = context.FilesDir.AbsolutePath + filename;
+            var filePath = Path.Combine(ROOTPATH, filename);
             try {
                 _recorder.SetAudioSource(AudioSource.Mic);
                 _recorder.SetOutputFormat(OutputFormat.Default);
@@ -53,7 +52,7 @@ namespace LoudMouth.Droid.Services {
         }
 
         public void PlayAudio(string filename = Constants.DEFAULT_AUDIO_PATH) {
-            var path = context.FilesDir.AbsolutePath + filename;
+            var path = Path.Combine(ROOTPATH, filename);
             StopAudio();
             _player.SetDataSource(path);
             _player.Prepare();
