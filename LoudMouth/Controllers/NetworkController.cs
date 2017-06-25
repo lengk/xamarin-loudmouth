@@ -5,8 +5,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 using LoudMouth.Controllers;
 using LoudMouth.Models;
+using LoudMouth.Services;
 using Newtonsoft.Json.Linq;
 
 namespace LoudMouth {
@@ -34,8 +36,7 @@ namespace LoudMouth {
 
 
         // Post
-        public async Task<bool> CreateProfileFor(Attendee person) {
-            Debug.WriteLine("Creating a Profile");
+        public async Task<string> CreateProfile() {
             var data = new JObject();
             data.Add("locale", "en-us");
             var content = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
@@ -43,27 +44,33 @@ namespace LoudMouth {
 
             var body = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(body);
-            person.ProfileID = (string)json.GetValue("identificationProfileId"); // Need to work out the profile ID
-
-            db.Save(person);
-            Debug.WriteLine(json.ToString());
-            return false;
+            var id = (string)json.GetValue("identificationProfileId");
+            Debug.WriteLine("Creating a Profile " + id);
+            return id;
         }
 
         // POST 
-        public async void EnrolProfile(Attendee person, bool shortAudio = false) {
+        public async Task<bool> EnrolProfile(Attendee person, AudioFile file, bool shortAudio = false) {
             Debug.WriteLine("Enrol a Profile");
             var url = string.Format(EnrollProfileURL, person.ProfileID, shortAudio);
 
             HttpResponseMessage response;
 
             // Request body
-            byte[] byteData = Encoding.UTF8.GetBytes("");
-
+            IFileLoader loader = DependencyService.Get<IFileLoader>();
+            byte[] byteData = loader.LoadFile(file.FilePath);
+            var client = new HttpClient();
             using (var content = new ByteArrayContent(byteData)) {
-                content.Headers.ContentType = octetMedia;
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                 response = await client.PostAsync(url, content);
             }
+
+            if (!response.IsSuccessStatusCode) {
+                var body = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine(body);
+            }
+
+            return response.IsSuccessStatusCode;
         }
 
         // POST

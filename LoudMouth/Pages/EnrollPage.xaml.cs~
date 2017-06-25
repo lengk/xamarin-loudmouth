@@ -12,6 +12,7 @@ namespace LoudMouth.Pages {
     public partial class EnrollPage : ContentPage {
         DataAccessController db;
         ObservableCollection<Attendee> people = new ObservableCollection<Attendee>();
+        NetworkController nc = new NetworkController();
 
         public EnrollPage() {
             InitializeComponent();
@@ -21,15 +22,16 @@ namespace LoudMouth.Pages {
         }
 
         void OnSubmitClicked(object sender, EventArgs e) {
-            //string name = NameEntry.Text;
-            //Attendee person = new Attendee();
-            //person.Name = name;
+            string name = PersonName.Text;
+            Attendee person = new Attendee();
+            person.Name = name;
         }
 
-        void AddPerson(object sender, EventArgs args) {
+        async void AddPerson(object sender, EventArgs args) {
             Attendee person = new Attendee();
             person.Name = PersonName.Text;
-            Navigation.PushPopupAsync(new PopupAuth(person));
+            person.ProfileID = await nc.CreateProfile();
+            await Navigation.PushPopupAsync(new PopupAuth(person));
             people.Add(person);
         }
     }

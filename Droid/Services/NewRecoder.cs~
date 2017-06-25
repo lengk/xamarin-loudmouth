@@ -1,0 +1,13 @@
+﻿using System;
+namespace LoudMouth.Droid.Services {
+    public class NewRecoder {
+        WaveRecorder recoreder
+        public NewRecoder() {
+            
+        }
+
+        void Start(){
+            
+        }
+    }
+}

@@ -20,8 +20,7 @@ namespace LoudMouth.Droid.Services {
             context = Android.App.Application.Context;
             _player = new MediaPlayer();
             _recorder = new MediaRecorder();
-            Debug.WriteLine(context.FilesDir
-                           );
+            Debug.WriteLine(context.FilesDir);
         }
 
         string filePath;

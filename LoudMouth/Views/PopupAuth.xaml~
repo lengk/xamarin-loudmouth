@@ -19,7 +19,8 @@
         HorizontalOptions="FillAndExpand"
         Padding="20, 20, 20, 20">
         <Label Text="Speak for 30 seconds to introduce yourself"/>
-        <Button Text="Enroll" Clicked="Enroll"/>
+        <Button x:Name="EnrollButton" Text="Enroll" Clicked="Enroll"/>
+        <ActivityIndicator x:Name="ProgressIndicator" IsRunning="true" IsVisible="false"/>
         <Button Text="Close" Clicked="Close"/>
     </StackLayout>
 </pages:PopupPage>
